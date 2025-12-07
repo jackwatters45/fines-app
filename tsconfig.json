@@ -13,7 +13,6 @@
     "forceConsistentCasingInFileNames": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
-    "declarationMap": true,
     "sourceMap": true,
     "noEmit": true,
     "types": ["@cloudflare/workers-types"],
