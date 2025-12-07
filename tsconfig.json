@@ -1,13 +1,27 @@
 {
   "extends": "@tsconfig/bun",
   "compilerOptions": {
-    "forceConsistentCasingInFileNames": true,
-    "noUncheckedIndexedAccess": true,
-    "strictNullChecks": true,
-    "target": "ESNext",
+    "target": "ES2022",
     "module": "Preserve",
     "moduleResolution": "Bundler",
-    "types": ["@cloudflare/workers-types"]
+    "moduleDetection": "force",
+    "strict": true,
+    "exactOptionalPropertyTypes": true,
+    "noUnusedLocals": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+    "forceConsistentCasingInFileNames": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noEmit": true,
+    "types": ["@cloudflare/workers-types"],
+    "plugins": [
+      {
+        "name": "@effect/language-service"
+      }
+    ]
   },
   "include": ["types/**/*", "infra/**/*", "alchemy.run.ts"]
 }

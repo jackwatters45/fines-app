@@ -15,11 +15,13 @@
     "dev": "alchemy dev",
     "check": "bunx ultracite@latest check",
     "fix": "bunx ultracite@latest fix --unsafe",
+    "prepare": "effect-language-service patch",
     "postinstall": "vibe-rules install codex"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.6",
     "@cloudflare/workers-types": "^4.20251205.0",
+    "@effect/language-service": "^0.60.0",
     "@tsconfig/bun": "^1.0.10",
     "@types/bun": "latest",
     "@types/node": "^24.10.1",
@@ -32,6 +34,11 @@
     "vibe-rules": "^0.3.91",
     "vitest": "latest"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@effect/platform": "^0.93.6",
+    "@effect/platform-node": "^0.103.0",
+    "alchemy-effect": "^0.2.0",
+    "effect": "^3.19.9"
+  },
   "private": true
 }
