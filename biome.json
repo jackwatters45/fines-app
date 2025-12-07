@@ -1,0 +1,111 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space"
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!bun.lock",
+      "!**/*.gen.ts"
+    ]
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "nursery": {
+        "useSortedClasses": "off",
+        "noShadow": "off",
+        "useImageSize": "off"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "off",
+        "noConsole": "off",
+        "noEmptyBlockStatements": "off",
+        "useAwait": "off",
+        "noExplicitAny": "off",
+        "noEvolvingTypes": "off",
+        "noUnknownAtRules": "off",
+        "noAlert": "off"
+      },
+      "complexity": {
+        "noVoid": "off",
+        "noBannedTypes": "warn",
+        "noExcessiveCognitiveComplexity": "off"
+      },
+      "a11y": {
+        "useValidAnchor": "info",
+        "noNoninteractiveElementInteractions": "off"
+      },
+      "style": {
+        "noMagicNumbers": "off",
+        "noNestedTernary": "off",
+        "useImportType": "error",
+        "useExportType": "error",
+        "noNonNullAssertion": "off",
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noUselessElse": "error",
+        "noHeadElement": "off"
+      },
+      "performance": {
+        "useTopLevelRegex": "off",
+        "noNamespaceImport": "off",
+        "noBarrelFile": "off",
+        "noImgElement": "off"
+      },
+      "correctness": {
+        "useYield": "off",
+        "noUnusedVariables": "off",
+        "noUnusedFunctionParameters": "off",
+        "noNestedComponentDefinitions": "off"
+      }
+    },
+    "includes": [
+      "**",
+      "!**/tests/**/*",
+      "!**/dist/**/*",
+      "!**/*.gen.ts",
+      "!**/infra/**/*"
+    ]
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "biome.json"
+      ],
+      "formatter": {
+        "enabled": false
+      }
+    }
+  ],
+  "extends": [
+    "ultracite"
+  ]
+}

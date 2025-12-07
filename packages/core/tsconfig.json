@@ -1,13 +1,13 @@
 {
   "extends": "@tsconfig/bun",
   "compilerOptions": {
-    "forceConsistentCasingInFileNames": true,
-    "noUncheckedIndexedAccess": true,
-    "strictNullChecks": true,
     "target": "ESNext",
     "module": "Preserve",
     "moduleResolution": "Bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
     "types": ["@cloudflare/workers-types"]
   },
-  "include": ["types/**/*", "infra/**/*", "alchemy.run.ts"]
+  "include": ["src/**/*", "drizzle.config.ts"]
 }

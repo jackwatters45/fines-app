@@ -1,5 +1,15 @@
-# dependencies (bun install)
+# dependencies
 node_modules
+
+# alchemy
+.alchemy
+
+# tmp files
+.#*
+
+# env
+.env*.local
+.env
 
 # output
 out
@@ -12,27 +22,20 @@ coverage
 
 # logs
 logs
-_.log
-report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
-
-# dotenv environment variable files
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+*.log
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # caches
 .eslintcache
 .cache
 *.tsbuildinfo
 
-# IntelliJ based IDEs
-.idea
-
-# Finder (MacOS) folder config
+# misc
 .DS_Store
+.turbo
+.opencode
+.wrangler
 
-.alchemy/
-.env
-.wrangler/
+# IDEs
+.idea
+.zed

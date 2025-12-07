@@ -3,20 +3,35 @@
   "version": "0.0.0",
   "description": "Alchemy Typescript Project",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "packageManager": "bun@1.3.0",
   "scripts": {
-    "build": "tsc -b",
+    "build": "turbo build",
+    "typecheck": "turbo typecheck",
     "deploy": "alchemy deploy",
     "destroy": "alchemy destroy",
     "dev": "alchemy dev",
+    "check": "bunx ultracite@latest check",
+    "fix": "bunx ultracite@latest fix --unsafe",
     "postinstall": "vibe-rules install codex"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250805.0",
-    "@types/node": "^24.0.3",
-    "alchemy": "0.80.1",
-    "miniflare": "^4.20250617.3",
-    "typescript": "^5.8.3",
-    "vibe-rules": "^0.3.91"
+    "@biomejs/biome": "2.2.6",
+    "@cloudflare/workers-types": "^4.20251205.0",
+    "@tsconfig/bun": "^1.0.10",
+    "@types/bun": "latest",
+    "@types/node": "^24.10.1",
+    "alchemy": "^0.80.1",
+    "lefthook": "^1.13.6",
+    "miniflare": "^4.20251202.1",
+    "turbo": "^2.6.3",
+    "typescript": "^5.9.3",
+    "ultracite": "5.6.4",
+    "vibe-rules": "^0.3.91",
+    "vitest": "latest"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "private": true
 }
