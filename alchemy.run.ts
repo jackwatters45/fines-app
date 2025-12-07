@@ -1,5 +1,5 @@
 import alchemy from 'alchemy';
-import { Tunnel } from 'alchemy/cloudflare';
+import { GitHubComment } from 'alchemy/github';
 import { CloudflareStateStore } from 'alchemy/state';
 
 const app = await alchemy('fines-app', {
@@ -13,23 +13,28 @@ console.log({
   database: infra.database.id,
 });
 
-// Create a tunnel with ingress rules
-const tunnel = await Tunnel('web-app', {
-  name: 'web-app-tunnel',
-  ingress: [
-    {
-      hostname: 'app.example.com',
-      service: 'http://localhost:3000',
-    },
-    {
-      service: 'http_status:404', // catch-all rule (required)
-    },
-  ],
-});
+console.log(`🚀 Deployed to: https://${infra.web.url}`);
 
-// Display the tunnel token
-console.log('Tunnel created!');
-console.log('Token:', tunnel.token.unencrypted);
+if (process.env.PULL_REQUEST) {
+  // if this is a PR, add a comment to the PR with the preview URL
+  // it will auto-update with each push
+  await GitHubComment('preview-comment', {
+    owner: 'jackwatters45',
+    repository: 'fines-app',
+    issueNumber: Number(process.env.PULL_REQUEST),
+    body: `
+     ## 🚀 Preview Deployed
+
+     Your changes have been deployed to a preview environment:
+
+     **🌐 Website:** ${infra.web.url}
+
+     Built from commit ${process.env.GITHUB_SHA?.slice(0, 7)}
+
+     ---
+     <sub>🤖 This comment updates automatically with each push.</sub>`,
+  });
+}
 
 await app.finalize();
 
