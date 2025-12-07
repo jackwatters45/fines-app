@@ -1,12 +1,10 @@
 import { betterAuth } from 'better-auth';
-import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import type { Database } from './drizzle';
+import type { Db } from './kysely';
 
-export function createAuth(db: Database) {
+export function createAuth(db: Db) {
   return betterAuth({
-    database: drizzleAdapter(db, {
-      provider: 'sqlite',
-    }),
+    // Better Auth uses Kysely internally; pass the Kysely instance directly
+    database: db,
     emailAndPassword: {
       enabled: true,
     },

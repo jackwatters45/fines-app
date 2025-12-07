@@ -1,16 +1,14 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-// Example schema - modify as needed
+// Schema used by Drizzle Kit for migration generation
+// Runtime queries use Kysely with types in ../kysely/types.ts
+
 export const users = sqliteTable('users', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   email: text('email').notNull().unique(),
   name: text('name'),
-  createdAt: integer('created_at', { mode: 'timestamp' })
-    .notNull()
-    .$defaultFn(() => new Date()),
-  updatedAt: integer('updated_at', { mode: 'timestamp' })
-    .notNull()
-    .$defaultFn(() => new Date()),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 });
 
 export const fines = sqliteTable('fines', {
@@ -18,11 +16,9 @@ export const fines = sqliteTable('fines', {
   userId: integer('user_id')
     .notNull()
     .references(() => users.id),
-  amount: integer('amount').notNull(), // Store in cents
+  amount: integer('amount').notNull(),
   reason: text('reason').notNull(),
   paid: integer('paid', { mode: 'boolean' }).notNull().default(false),
-  createdAt: integer('created_at', { mode: 'timestamp' })
-    .notNull()
-    .$defaultFn(() => new Date()),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   paidAt: integer('paid_at', { mode: 'timestamp' }),
 });
