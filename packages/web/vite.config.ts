@@ -6,14 +6,22 @@ import { defineConfig, type Plugin } from 'vite';
 import viteTsConfigPaths from 'vite-tsconfig-paths';
 
 const config = defineConfig({
-  build: {
-    target: 'esnext',
-    rollupOptions: {
-      external: ['node:async_hooks', 'cloudflare:workers'],
-    },
-  },
+  // build: {
+  //   target: 'esnext',
+  //   rollupOptions: {
+  //     external: ['node:async_hooks', 'cloudflare:workers'],
+  //   },
+  // },
   plugins: [
     alchemy() as Plugin,
+    // nitro({
+    //   compatibilityDate: '2024-09-19',
+    //   preset: 'cloudflare_module',
+    //   cloudflare: {
+    //     deployConfig: true,
+    //     nodeCompat: true,
+    //   },
+    // }) as Plugin[],
     viteTsConfigPaths({
       projects: ['./tsconfig.json'],
     }),
@@ -21,6 +29,11 @@ const config = defineConfig({
     tanstackStart(),
     viteReact(),
   ],
+  css: {
+    modules: {
+      localsConvention: 'camelCase',
+    },
+  },
 });
 
 export default config;
