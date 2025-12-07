@@ -52,6 +52,7 @@
         "noNoninteractiveElementInteractions": "off"
       },
       "style": {
+        "noNamespace": "off",
         "noMagicNumbers": "off",
         "noNestedTernary": "off",
         "useImportType": "error",
