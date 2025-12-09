@@ -13,7 +13,8 @@
     "includes": [
       "**",
       "!bun.lock",
-      "!**/*.gen.ts"
+      "!**/*.gen.ts",
+      "!**/migrations"
     ]
   },
   "assist": {

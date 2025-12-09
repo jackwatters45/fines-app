@@ -1,13 +1,24 @@
 import { betterAuth } from 'better-auth';
-import type { Db } from './kysely';
+import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { organization } from 'better-auth/plugins';
+import { tanstackStartCookies } from 'better-auth/tanstack-start';
+import type { Database } from './drizzle';
 
-export function createAuth(db: Db) {
+export function createAuth(db: Database) {
   return betterAuth({
-    // Better Auth uses Kysely internally; pass the Kysely instance directly
-    database: db,
+    database: drizzleAdapter(db, {
+      provider: 'sqlite',
+    }),
     emailAndPassword: {
       enabled: true,
     },
+    plugins: [
+      organization({
+        allowUserToCreateOrganization: true,
+        creatorRole: 'owner',
+      }),
+      tanstackStartCookies(), // must be last
+    ],
   });
 }
 
