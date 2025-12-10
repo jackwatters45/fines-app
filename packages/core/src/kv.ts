@@ -10,23 +10,21 @@ const make = (kv: KVNamespace) => ({
     return yield* Effect.tryPromise(() => kv.get(key)).pipe(
       Effect.tapError(Effect.logError),
       Effect.mapError(
-        (cause) =>
-          new KVError({ message: `Failed to get key: ${key}`, cause }),
-      ),
+        (cause) => new KVError({ message: `Failed to get key: ${key}`, cause })
+      )
     );
   }),
 
   set: Effect.fn('KV:set')(function* (
     key: string,
     value: string,
-    options?: KVNamespacePutOptions,
+    options?: KVNamespacePutOptions
   ) {
     return yield* Effect.tryPromise(() => kv.put(key, value, options)).pipe(
       Effect.mapError(
-        (cause) =>
-          new KVError({ message: `Failed to set key: ${key}`, cause }),
+        (cause) => new KVError({ message: `Failed to set key: ${key}`, cause })
       ),
-      Effect.asVoid,
+      Effect.asVoid
     );
   }),
 
@@ -37,17 +35,17 @@ const make = (kv: KVNamespace) => ({
           new KVError({
             message: `Failed to delete key: ${key}`,
             cause,
-          }),
+          })
       ),
-      Effect.asVoid,
+      Effect.asVoid
     );
   }),
 
   list: Effect.fn('KV:list')(function* (options?: KVNamespaceListOptions) {
     return yield* Effect.tryPromise(() => kv.list(options)).pipe(
       Effect.mapError(
-        (cause) => new KVError({ message: 'Failed to list keys', cause }),
-      ),
+        (cause) => new KVError({ message: 'Failed to list keys', cause })
+      )
     );
   }),
 });
