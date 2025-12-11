@@ -1,31 +1,64 @@
 import alchemy from 'alchemy';
+import {
+  D1Database,
+  KVNamespace,
+  R2Bucket,
+  TanStackStart,
+} from 'alchemy/cloudflare';
 import { GitHubComment } from 'alchemy/github';
 import { CloudflareStateStore } from 'alchemy/state';
 
-const stage = process.env.STAGE ?? process.env.USER ?? 'dev';
-
 export const app = await alchemy('fines-app', {
-  stage,
   stateStore: (scope) =>
-    new CloudflareStateStore(scope, {
-      scriptName: `app-state-${stage}`,
-    }),
+    new CloudflareStateStore(scope, { scriptName: `app-state-${scope.stage}` }),
 });
 
-const infra = await import('./infra');
+// Stage
+export const stage = app.stage;
+export const prodStage = 'prod';
+export const devStage = 'dev';
+export const isPermanentStage = [prodStage, devStage].includes(stage);
+
+// Domain
+const PRODUCTION = 'fines.laxdb.io';
+const DEV = 'dev.fines.laxdb.io';
+export const domain =
+  stage === prodStage
+    ? PRODUCTION
+    : stage === devStage
+      ? DEV
+      : `${stage}.${DEV}`;
+
+// Resources
+export const db = await D1Database('db', {
+  migrationsDir: './packages/core/migrations',
+  readReplication: { mode: 'auto' },
+});
+
+export const kv = await KVNamespace('kv', {});
+
+export const storage = await R2Bucket('storage', {});
+
+export const web = await TanStackStart('web', {
+  bindings: {
+    DB: db,
+    KV: kv,
+    STORAGE: storage,
+  },
+  cwd: './packages/web',
+  domains: [domain],
+});
 
 console.log({
-  domain: infra.domain,
-  webWorkers: infra.web.url,
-  db: infra.db.id,
-  kv: infra.kv.namespaceId,
-  r2: infra.storage.name,
-  stage: infra.stage,
+  domain,
+  webWorkers: web.url,
+  db: db.id,
+  kv: kv.namespaceId,
+  r2: storage.name,
+  stage,
 });
 
 if (process.env.PULL_REQUEST) {
-  // if this is a PR, add a comment to the PR with the preview URL
-  // it will auto-update with each push
   await GitHubComment('preview-comment', {
     owner: 'jackwatters45',
     repository: 'fines-app',
@@ -35,7 +68,7 @@ if (process.env.PULL_REQUEST) {
 
      Your changes have been deployed to a preview environment:
 
-     **🌐 Website:** ${infra.web.url}
+     **🌐 Website:** ${web.url}
 
      Built from commit ${process.env.GITHUB_SHA?.slice(0, 7)}
 
