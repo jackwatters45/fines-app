@@ -13,6 +13,8 @@ console.log({
   db: infra.db.id,
 });
 
+console.log('PULL_REQUEST env:', process.env.PULL_REQUEST);
+
 if (process.env.PULL_REQUEST) {
   // if this is a PR, add a comment to the PR with the preview URL
   // it will auto-update with each push
