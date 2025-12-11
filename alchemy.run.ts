@@ -2,7 +2,7 @@ import alchemy from 'alchemy';
 import { GitHubComment } from 'alchemy/github';
 import { CloudflareStateStore } from 'alchemy/state';
 
-const stage = process.env.STAGE ?? 'dev';
+const stage = process.env.STAGE ?? process.env.USER ?? 'dev';
 
 export const app = await alchemy('fines-app', {
   stage,
@@ -15,8 +15,12 @@ export const app = await alchemy('fines-app', {
 const infra = await import('./infra');
 
 console.log({
-  web: infra.web.url,
+  domain: infra.domain,
+  webWorkers: infra.web.url,
   db: infra.db.id,
+  kv: infra.kv.namespaceId,
+  r2: infra.storage.name,
+  stage: infra.stage,
 });
 
 if (process.env.PULL_REQUEST) {
