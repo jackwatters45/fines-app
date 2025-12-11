@@ -2,7 +2,10 @@ import { app } from '../alchemy.run';
 
 export const stage = app.stage;
 
-export const isPermanentStage = ['production', 'dev'].includes(stage);
+export const prodStage = 'prod';
+export const devStage = 'dev';
+
+export const isPermanentStage = [prodStage, devStage].includes(stage);
 
 /**
  * Generates a stage-scoped resource name for Cloudflare resources.

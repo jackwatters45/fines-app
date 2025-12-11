@@ -1,13 +1,13 @@
-import {stage } from './stage';
+import { devStage, prodStage, stage } from './stage';
 
 export const PRODUCTION = 'fines.laxdb.io';
 export const DEV = 'dev.fines.laxdb.io';
 
-export const permanentDomain = stage === 'production' ? PRODUCTION : DEV;
+export const permanentDomain = stage === prodStage ? PRODUCTION : DEV;
 
 export const domain =
-  stage === 'production'
+  stage === prodStage
     ? PRODUCTION
-    : stage === 'dev'
+    : stage === devStage
       ? DEV
       : `${stage}.${DEV}`;
