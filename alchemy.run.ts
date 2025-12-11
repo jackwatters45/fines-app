@@ -2,13 +2,14 @@ import alchemy from 'alchemy';
 import { GitHubComment } from 'alchemy/github';
 import { CloudflareStateStore } from 'alchemy/state';
 
-const stage = process.env.STAGE ?? "dev";
+const stage = process.env.STAGE ?? 'dev';
 
 export const app = await alchemy('fines-app', {
   stage,
-  stateStore: (scope) => new CloudflareStateStore(scope, {
-    scriptName: `app-state-${stage}`
-  })
+  stateStore: (scope) =>
+    new CloudflareStateStore(scope, {
+      scriptName: `app-state-${stage}`,
+    }),
 });
 
 const infra = await import('./infra');
