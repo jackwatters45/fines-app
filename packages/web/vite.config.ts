@@ -2,7 +2,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import viteReact from '@vitejs/plugin-react';
 import alchemy from 'alchemy/cloudflare/tanstack-start';
-import { defineConfig, type Plugin } from 'vite';
+import { defineConfig, type PluginOption } from 'vite';
 import viteTsConfigPaths from 'vite-tsconfig-paths';
 
 const config = defineConfig({
@@ -13,7 +13,7 @@ const config = defineConfig({
   //   },
   // },
   plugins: [
-    alchemy() as Plugin,
+    alchemy() as PluginOption,
     // nitro({
     //   compatibilityDate: '2024-09-19',
     //   preset: 'cloudflare_module',

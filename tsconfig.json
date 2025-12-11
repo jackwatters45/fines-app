@@ -15,7 +15,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "noEmit": true,
-    "types": ["@cloudflare/workers-types"],
+    "types": ["@cloudflare/workers-types", "@types/node"],
     "plugins": [
       {
         "name": "@effect/language-service"
