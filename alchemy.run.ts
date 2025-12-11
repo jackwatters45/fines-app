@@ -2,8 +2,13 @@ import alchemy from 'alchemy';
 import { GitHubComment } from 'alchemy/github';
 import { CloudflareStateStore } from 'alchemy/state';
 
+const stage = process.env.STAGE ?? "dev";
+
 export const app = await alchemy('fines-app', {
-  stateStore: (scope) => new CloudflareStateStore(scope),
+  stage,
+  stateStore: (scope) => new CloudflareStateStore(scope, {
+    scriptName: `app-state-${stage}`
+  })
 });
 
 const infra = await import('./infra');
@@ -12,8 +17,6 @@ console.log({
   web: infra.web.url,
   db: infra.db.id,
 });
-
-console.log('PULL_REQUEST env:', process.env.PULL_REQUEST);
 
 if (process.env.PULL_REQUEST) {
   // if this is a PR, add a comment to the PR with the preview URL
