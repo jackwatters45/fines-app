@@ -1,11 +1,12 @@
 import { TanStackStart } from 'alchemy/cloudflare';
-import { database } from './database';
+import { db } from './database';
 import { kv } from './kv';
 import { storage } from './storage';
 
+
 export const web = await TanStackStart('web', {
   bindings: {
-    DB: database,
+    DB: db,
     KV: kv,
     STORAGE: storage,
   },

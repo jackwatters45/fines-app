@@ -10,9 +10,9 @@
   "scripts": {
     "build": "turbo build",
     "typecheck": "turbo typecheck",
-    "deploy": "alchemy deploy",
-    "destroy": "alchemy destroy",
-    "dev": "alchemy dev",
+    "deploy": "bun --env-file=.env alchemy deploy",
+    "destroy": "bun --env-file=.env alchemy destroy",
+    "dev": "bun --env-file=.env alchemy dev",
     "check": "bunx ultracite@latest check",
     "fix": "bunx ultracite@latest fix --unsafe",
     "prepare": "effect-language-service patch",
@@ -20,13 +20,14 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.6",
-    "@cloudflare/workers-types": "^4.20251205.0",
-    "@effect/language-service": "^0.60.0",
+    "@cloudflare/workers-types": "^4.20251211.0",
+    "@effect/language-service": "^0.62.0",
     "@tsconfig/bun": "^1.0.10",
     "@types/bun": "latest",
-    "@types/node": "^24.10.1",
-    "alchemy": "^0.80.1",
-    "lefthook": "^1.13.6",
+    "@types/node": "^24.10.3",
+    "alchemy": "latest",
+    "alchemy-effect": "^0.2.0",
+    "lefthook": "^2.0.9",
     "miniflare": "^4.20251202.1",
     "turbo": "^2.6.3",
     "typescript": "^5.9.3",
@@ -37,8 +38,7 @@
   "dependencies": {
     "@effect/platform": "^0.93.6",
     "@effect/platform-node": "^0.103.0",
-    "alchemy-effect": "^0.2.0",
-    "effect": "^3.19.9"
+    "effect": "^3.19.11"
   },
   "private": true
 }
