@@ -12,4 +12,5 @@ export const stage = app.stage;
  * resourceName("db")     // "fines-app-prod-db" or "fines-app-pr-7-db"
  * resourceName("kv")     // "fines-app-jw-kv" (local dev)
  */
-export const resourceName = (name: string) => `${app.name}-${stage}-${name}` as const
+export const resourceName = (name: string) =>
+  `${app.name}-${stage}-${name}` as const;

@@ -9,5 +9,6 @@ export const web = await TanStackStart('web', {
     KV: kv,
     STORAGE: storage,
   },
+ 	adopt: true,
   cwd: './packages/web',
 });
