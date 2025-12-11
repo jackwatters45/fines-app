@@ -2,6 +2,7 @@ import { TanStackStart } from 'alchemy/cloudflare';
 import { db } from './database';
 import { kv } from './kv';
 import { storage } from './storage';
+import { domain } from './dns';
 
 export const web = await TanStackStart('web', {
   bindings: {
@@ -9,6 +10,7 @@ export const web = await TanStackStart('web', {
     KV: kv,
     STORAGE: storage,
   },
- 	adopt: true,
+  adopt: true,
   cwd: './packages/web',
+  domains: [domain],
 });
