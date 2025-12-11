@@ -6,7 +6,7 @@ export class KVError extends Data.TaggedError('KVError')<{
 }> {}
 
 const make = (kv: KVNamespace) => ({
-  get: Effect.fn('KV:get')(function* (key: string) {
+  get: Effect.fn('KV.get')(function* (key: string) {
     return yield* Effect.tryPromise(() => kv.get(key)).pipe(
       Effect.tapError(Effect.logError),
       Effect.mapError(
@@ -15,7 +15,7 @@ const make = (kv: KVNamespace) => ({
     );
   }),
 
-  set: Effect.fn('KV:set')(function* (
+  set: Effect.fn('KV.set')(function* (
     key: string,
     value: string,
     options?: KVNamespacePutOptions
@@ -28,7 +28,7 @@ const make = (kv: KVNamespace) => ({
     );
   }),
 
-  delete: Effect.fn('KV:delete')(function* (key: string) {
+  delete: Effect.fn('KV.delete')(function* (key: string) {
     return yield* Effect.tryPromise(() => kv.delete(key)).pipe(
       Effect.mapError(
         (cause) =>
@@ -41,7 +41,7 @@ const make = (kv: KVNamespace) => ({
     );
   }),
 
-  list: Effect.fn('KV:list')(function* (options?: KVNamespaceListOptions) {
+  list: Effect.fn('KV.list')(function* (options?: KVNamespaceListOptions) {
     return yield* Effect.tryPromise(() => kv.list(options)).pipe(
       Effect.mapError(
         (cause) => new KVError({ message: 'Failed to list keys', cause })
@@ -50,9 +50,10 @@ const make = (kv: KVNamespace) => ({
   }),
 });
 
-export class KVService extends Context.Tag('@fines-app/KV')<
-  KVService,
+export class KV extends Context.Tag('@fines-app/KV')<
+  KV,
   ReturnType<typeof make>
 >() {
-  static layer = (kv: KVNamespace) => Layer.succeed(KVService, make(kv));
+  /** Create a KV layer from a Cloudflare KVNamespace binding */
+  static layer = (kv: KVNamespace) => Layer.succeed(KV, make(kv));
 }

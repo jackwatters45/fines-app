@@ -4,7 +4,7 @@ import { Layer } from 'effect';
 
 const D1Live = (db: D1Database) => D1Client.layer({ db });
 
-const DrizzleLive = SqliteDrizzle.layer;
+export const DatabaseLive = SqliteDrizzle.layer;
 
 export const makeDatabaseLayer = (db: D1Database) =>
-  Layer.provideMerge(DrizzleLive, D1Live(db));
+  Layer.provideMerge(DatabaseLive, D1Live(db));
