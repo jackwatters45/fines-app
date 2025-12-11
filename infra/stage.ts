@@ -2,7 +2,6 @@ import { app } from '../alchemy.run';
 
 export const stage = app.stage;
 
-
 /**
  * Generates a stage-scoped resource name for Cloudflare resources.
  *
