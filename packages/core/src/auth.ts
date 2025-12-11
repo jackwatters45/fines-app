@@ -15,7 +15,7 @@ import { AuthenticationError } from './error';
 type AuthBindings = {
   db: Database;
   kv: KVNamespace;
-}
+};
 
 export const createAuth = ({ db, kv }: AuthBindings) => {
   const auth = betterAuth({
