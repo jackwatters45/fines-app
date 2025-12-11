@@ -2,7 +2,7 @@ import alchemy from 'alchemy';
 import { GitHubComment } from 'alchemy/github';
 import { CloudflareStateStore } from 'alchemy/state';
 
-const app = await alchemy('fines-app', {
+export const app = await alchemy('fines-app', {
   stateStore: (scope) => new CloudflareStateStore(scope),
 });
 
@@ -10,10 +10,8 @@ const infra = await import('./infra');
 
 console.log({
   web: infra.web.url,
-  database: infra.database.id,
+  db: infra.db.id,
 });
-
-console.log(`🚀 Deployed to: https://${infra.web.url}`);
 
 if (process.env.PULL_REQUEST) {
   // if this is a PR, add a comment to the PR with the preview URL
@@ -37,5 +35,3 @@ if (process.env.PULL_REQUEST) {
 }
 
 await app.finalize();
-
-export { infra };
