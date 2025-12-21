@@ -1,3 +1,35 @@
+# Fines App - Agent Instructions
+
+## Project Context
+
+Multi-tenant fines tracking app for sports teams. Each team = Better Auth organization.
+
+### Key Files to Know
+
+- `PLANNING.md` - Feature specs, data model, roadmap
+- `CLAUDE.md` - Tech stack, commands, conventions
+- `packages/core/src/auth.ts` - Better Auth setup with Effect wrappers
+- `packages/core/src/drizzle/schema.ts` - Database schema
+- `packages/web/src/routes/` - TanStack Start routes
+
+### Current Phase
+
+Phase 1 (Foundation) in progress:
+
+- [x] Project setup, Database setup
+- [x] Better Auth with Organizations
+- [ ] Basic layout/navigation
+- [ ] Application tables (players, fines, etc.)
+
+### Conventions
+
+- **Single quotes** - enforced by oxfmt
+- **Effect-TS** - for error handling, use `Schema.TaggedError`
+- **jj** - version control (not raw git)
+- **Bun** - package manager and runtime
+
+---
+
 <!-- effect-solutions:start -->
 
 ## Effect Solutions Usage
