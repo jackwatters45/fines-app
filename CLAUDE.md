@@ -1,119 +1,113 @@
-<!-- effect-solutions:start -->
+# Fines App - AI Assistant Context
 
-## Effect Solutions Usage
+## Overview
 
-The Effect Solutions CLI provides curated best practices and patterns for Effect TypeScript. Before working on Effect code, check if there's a relevant topic that covers your use case.
+A multi-tenant web application for tracking player fines on sports teams. Each team is an "organization" via Better Auth. Players accumulate fines throughout the season to fund team events.
 
-- `effect-solutions list` - List all available topics
-- `effect-solutions show <slug...>` - Read one or more topics
-- `effect-solutions search <term>` - Search topics by keyword
+## Tech Stack
 
-**Local Effect Source:** The Effect repository is cloned to `~/.local/share/effect-solutions/effect` for reference. Use this to explore APIs, find usage examples, and understand implementation details when the documentation isn't enough.
+| Layer          | Technology                              |
+| -------------- | --------------------------------------- |
+| Frontend       | TanStack Start (React 19), Tailwind v4  |
+| Backend        | Cloudflare Workers (via TanStack Start) |
+| Database       | Cloudflare D1 (SQLite) via Drizzle ORM  |
+| Auth           | Better Auth (organizations + admin)     |
+| Infrastructure | Alchemy (TypeScript IaC)                |
+| Patterns       | Effect-TS for error handling            |
+| Monorepo       | Bun workspaces + Turborepo              |
+| Linting        | oxlint + oxfmt (single quotes)          |
+| VCS            | jj (Jujutsu) - NOT git directly         |
 
-<!-- effect-solutions:end -->
+## Project Structure
 
-Default to using Bun instead of Node.js.
-
-- Use `bun <file>` instead of `node <file>` or `ts-node <file>`
-- Use `bun test` instead of `jest` or `vitest`
-- Use `bun build <file.html|file.ts|file.css>` instead of `webpack` or `esbuild`
-- Use `bun install` instead of `npm install` or `yarn install` or `pnpm install`
-- Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
-- Bun automatically loads .env, so don't use dotenv.
-
-## APIs
-
-- `Bun.serve()` supports WebSockets, HTTPS, and routes. Don't use `express`.
-- `bun:sqlite` for SQLite. Don't use `better-sqlite3`.
-- `Bun.redis` for Redis. Don't use `ioredis`.
-- `Bun.sql` for Postgres. Don't use `pg` or `postgres.js`.
-- `WebSocket` is built-in. Don't use `ws`.
-- Prefer `Bun.file` over `node:fs`'s readFile/writeFile
-- Bun.$`ls` instead of execa.
-
-## Testing
-
-Use `bun test` to run tests.
-
-```ts#index.test.ts
-import { test, expect } from "bun:test";
-
-test("hello world", () => {
-  expect(1).toBe(1);
-});
+```
+├── packages/
+│   ├── core/              # Shared logic, schema, auth
+│   │   ├── src/
+│   │   │   ├── drizzle/   # Schema, DB service
+│   │   │   ├── auth.ts    # Better Auth setup
+│   │   │   └── error.ts   # Effect error types
+│   │   └── migrations/    # Drizzle migrations
+│   └── web/               # TanStack Start frontend
+│       └── src/
+│           ├── routes/    # File-based routing
+│           ├── components/
+│           ├── lib/       # Auth client, utils
+│           └── query/     # TanStack Query hooks
+├── alchemy.run.ts         # Infrastructure definition
+├── PLANNING.md            # Feature specs & roadmap
+└── TODO.md                # Current tasks
 ```
 
-## Frontend
+## Commands
 
-Use HTML imports with `Bun.serve()`. Don't use `vite`. HTML imports fully support React, CSS, Tailwind.
+```bash
+# Development
+bun run dev              # Start dev server (alchemy dev)
+bun run check            # Lint (oxlint + oxfmt --check)
+bun run fix              # Fix lint issues
 
-Server:
+# Database
+cd packages/core
+bun run db:generate      # Generate Drizzle migrations
+bun run db:studio        # Open Drizzle Studio
 
-```ts#index.ts
-import index from "./index.html"
-
-Bun.serve({
-  routes: {
-    "/": index,
-    "/api/users/:id": {
-      GET: (req) => {
-        return new Response(JSON.stringify({ id: req.params.id }));
-      },
-    },
-  },
-  // optional websocket support
-  websocket: {
-    open: (ws) => {
-      ws.send("Hello, world!");
-    },
-    message: (ws, message) => {
-      ws.send(message);
-    },
-    close: (ws) => {
-      // handle close
-    }
-  },
-  development: {
-    hmr: true,
-    console: true,
-  }
-})
+# Deploy
+bun run deploy           # Deploy to Cloudflare
+bun run destroy          # Tear down infrastructure
 ```
 
-HTML files can import .tsx, .jsx or .js files directly and Bun's bundler will transpile & bundle automatically. `<link>` tags can point to stylesheets and Bun's CSS bundler will bundle.
+## Version Control (jj)
 
-```html#index.html
-<html>
-  <body>
-    <h1>Hello, world!</h1>
-    <script type="module" src="./frontend.tsx"></script>
-  </body>
-</html>
+This project uses **Jujutsu (jj)** instead of raw git:
+
+```bash
+jj status                # Working copy status
+jj log                   # View commit history
+jj describe -m "msg"     # Set commit message
+jj new                   # Create new change
+jj bookmark create X     # Create bookmark (like branch)
+jj git push -b X         # Push bookmark to remote
 ```
 
-With the following `frontend.tsx`:
+## Code Conventions
 
-```tsx#frontend.tsx
-import React from "react";
+### Formatting
 
-// import .css files directly and it works
-import './index.css';
+- **Single quotes** everywhere (configured in `.oxfmtrc.json`)
+- Run `bun run fix` before committing
 
-import { createRoot } from "react-dom/client";
+### Effect-TS Patterns
 
-const root = createRoot(document.body);
+- Use `Schema.TaggedError` for typed errors (see `packages/core/src/error.ts`)
+- Wrap async operations with `Effect.tryPromise`
+- Use `Effect.filterOrFail` for validation
 
-export default function Frontend() {
-  return <h1>Hello, world!</h1>;
-}
+### Auth Patterns
 
-root.render(<Frontend />);
+- `createAuth({ db, kv })` returns auth helpers
+- `getSession(headers)` - nullable session
+- `getSessionOrThrow(headers)` - fails if no session
+- Organization helpers for multi-tenant access
+
+### Database
+
+- Drizzle schema in `packages/core/src/drizzle/schema.ts`
+- Better Auth tables auto-managed
+- Application tables: players, fines, fine_presets, audit_logs
+
+## Environment Variables
+
+```bash
+# .env (local dev)
+ALCHEMY_PASSWORD=...     # Required for Alchemy state encryption
+BETTER_AUTH_SECRET=...   # Auth session signing
 ```
 
-Then, run index.ts
+## Domains
 
-```sh
-bun --hot ./index.ts
-```
-
-For more information, read the Bun API docs in `node_modules/bun-types/docs/**.md`.
+| Stage | Domain                  |
+| ----- | ----------------------- |
+| prod  | fines.laxdb.io          |
+| dev   | dev.fines.laxdb.io      |
+| PR    | pr-N.dev.fines.laxdb.io |
