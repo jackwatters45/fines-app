@@ -2,272 +2,288 @@
 
 ## Overview
 
-A web application for tracking player fines on a men's lacrosse team. Fines accumulate throughout the season and fund an end-of-season team trip. Players are expected to pay weekly; unpaid fines can double based on configurable rules.
+A web application for tracking player fines on a men's lacrosse team.
 
-**Key Decision:** Multi-tenant via Better Auth Organizations - each team is an "organization" so this can scale to multiple teams.
-
-## User Roles
-
-### Admin (Organization Owner/Admin)
-
-- Full CRUD on team members (players)
-- Issue fines to any player
-- Approve/reject fine suggestions from players
-- Mark fines as paid
-- Configure fine rules (doubling, presets)
-- View all data and reports
-
-### Player (Organization Member)
-
-- View all fines (full transparency)
-- View team leaderboard
-- Suggest fines for other players (requires admin approval)
-- View fine history and audit trail
-
-## Core Features
-
-### MVP (v1)
-
-#### 1. Authentication & Organizations
-
-- Email/password auth via Better Auth
-- Organization (team) creation
-- Invite players to organization
-- Player claims account via invite
-
-#### 2. Player Management
-
-- Add/remove team members
-- Player profiles (name, email)
-- Active/inactive status
-- Running balance (total owed)
-
-#### 3. Fine Management
-
-- Issue fines with:
-  - Amount (custom, in dollars)
-  - Reason (free text)
-  - Date issued
-  - Target player
-- Fine statuses: `pending` | `paid`
-- All fines visible to all players (transparency)
-- Audit trail for all changes
-
-#### 4. Fine Presets (per organization)
-
-- Admins can save common fines as presets
-- Examples: "Missed practice - $5", "Late - $2"
-- Quick-select when issuing fines
-
-#### 5. Payment Tracking (Simple)
-
-- Admin marks fines as paid
-- Payment date recorded
-- Running balance per player
-- Total team fund collected
-
-#### 6. Leaderboard / Dashboard
-
-- Team standings (who owes most)
-- Recent fines feed
-- Total collected vs outstanding
-- Summary stats
-
-#### 7. Audit Trail
-
-- Track all actions (fine created, paid, modified)
-- Who did what, when
-- Visible to all players
-
-### Backlog (v2+)
-
-- [ ] **Fine Suggestions** - Players suggest fines, admin approves
-- [ ] **Voting on Suggestions** - Require X players to "second" a suggestion
-- [ ] **Automated Doubling** - Cron job to double unpaid fines weekly
-- [ ] **Email Notifications** - Weekly reminders, fine issued alerts
-- [ ] **Season Management** - Archive seasons, start fresh
-- [ ] **Advanced Payment Tracking** - Partial payments, payment history
-- [ ] **Fine Appeals** - Players can contest fines in-app
-- [ ] **Export/Reports** - CSV, PDF summaries
-- [ ] **React Native App** - Expo mobile version
-
-## Data Model
-
-### Better Auth Tables (managed by Better Auth)
-
-- `user` - Auth users
-- `session` - User sessions
-- `account` - Auth accounts (credentials)
-- `verification` - Email verification tokens
-- `organization` - Teams
-- `member` - Organization membership (user + org + role)
-- `invitation` - Pending invites
-
-### Application Tables
-
-```sql
--- Players in an organization (may or may not have claimed account)
-players
-- id: text PRIMARY KEY
-- organization_id: text NOT NULL (FK organizations)
-- user_id: text (nullable - set when user claims account)
-- name: text NOT NULL
-- email: text
-- active: integer NOT NULL DEFAULT 1
-- balance: integer NOT NULL DEFAULT 0 (running balance in cents)
-- created_at: integer NOT NULL
-- updated_at: integer NOT NULL
-
--- Fine presets per organization
-fine_presets
-- id: text PRIMARY KEY
-- organization_id: text NOT NULL (FK organizations)
-- name: text NOT NULL
-- amount: integer NOT NULL (in cents)
-- description: text
-- active: integer NOT NULL DEFAULT 1
-- created_at: integer NOT NULL
-
--- Fines issued to players
-fines
-- id: text PRIMARY KEY
-- organization_id: text NOT NULL (FK organizations)
-- player_id: text NOT NULL (FK players)
-- amount: integer NOT NULL (in cents)
-- reason: text NOT NULL
-- status: text NOT NULL DEFAULT 'pending' (pending | paid)
-- issued_by_user_id: text NOT NULL (FK users)
-- issued_at: integer NOT NULL
-- paid_at: integer (nullable)
-- created_at: integer NOT NULL
-- updated_at: integer NOT NULL
-
--- Audit log for all actions
-audit_logs
-- id: text PRIMARY KEY
-- organization_id: text NOT NULL (FK organizations)
-- entity_type: text NOT NULL (player | fine | preset)
-- entity_id: text NOT NULL
-- action: text NOT NULL (created | updated | deleted | paid)
-- actor_user_id: text NOT NULL (FK users)
-- changes: text (JSON string of what changed)
-- created_at: integer NOT NULL
-
--- Fine suggestions (v2)
-fine_suggestions
-- id: text PRIMARY KEY
-- organization_id: text NOT NULL
-- target_player_id: text NOT NULL
-- suggested_by_player_id: text NOT NULL
-- amount: integer NOT NULL
-- reason: text NOT NULL
-- status: text NOT NULL DEFAULT 'pending' (pending | approved | rejected)
-- reviewed_by_user_id: text (nullable)
-- reviewed_at: integer (nullable)
-- created_at: integer NOT NULL
-
--- Fine rules configuration (v2)
-fine_rules
-- id: text PRIMARY KEY
-- organization_id: text NOT NULL
-- rule_type: text NOT NULL (weekly_double | grace_period | max_cap)
-- config: text NOT NULL (JSON)
-- active: integer NOT NULL DEFAULT 1
-- created_at: integer NOT NULL
-```
-
-## Pages / Routes
-
-### Public
-
-- `/login` - Sign in
-- `/signup` - Create account
-- `/invite/:code` - Accept organization invite
-
-### Authenticated (any role)
-
-- `/` - Dashboard (redirect based on context)
-- `/org/:orgId` - Organization dashboard / leaderboard
-- `/org/:orgId/fines` - All fines list
-- `/org/:orgId/players` - Team roster
-- `/org/:orgId/players/:playerId` - Player detail + their fines
-
-### Admin Only
-
-- `/org/:orgId/admin` - Admin dashboard
-- `/org/:orgId/admin/players/new` - Add player
-- `/org/:orgId/admin/fines/new` - Issue fine
-- `/org/:orgId/admin/presets` - Manage fine presets
-- `/org/:orgId/admin/suggestions` - Review suggestions (v2)
-- `/org/:orgId/admin/settings` - Org settings
+**Project Goal:** Experiment with Alchemy + Cloudflare stack. Will eventually merge with existing repo.
 
 ## Tech Stack
 
-- **Frontend**: TanStack Start (React 19), Tailwind v4
-- **Backend**: Cloudflare Workers (via TanStack Start server functions)
-- **Database**: Cloudflare D1 (SQLite) via Kysely
-- **Auth**: Better Auth with Organizations plugin
+- **Frontend**: TanStack Start (React 19), Tailwind v4, Effect Atom (state)
+- **Backend**: TanStack Start server functions → Effect services
+- **Database**: Cloudflare D1 (SQLite) via Drizzle
+- **Auth**: Better Auth (organizations schema exists, UI deprioritized)
 - **Infrastructure**: Alchemy
-- **Hosting**: Cloudflare
+- **Hosting**: Cloudflare Workers
 
-## UI/UX Notes
+> **Note:** Using Effect Atom instead of TanStack Query for frontend state. This diverges from lax-db (which has Atom set up but uses TanStack Query). Goal is to validate Effect Atom in production.
 
-- **Mobile-first design** - Players will primarily use phones
-- **Simple, clean interface** - Not overly designed
-- **Leaderboard prominent** - Gamification / shame factor
-- **Quick actions** - Easy to issue fines, mark paid
-- **Real-time feel** - Fast updates (can add websockets later)
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Frontend (React)                                       │
+│  - Effect Atom for state management                     │
+│  - RuntimeAtom.atom() for async data                    │
+│  - Minimal UI (functional, not polished)                │
+└─────────────────┬───────────────────────────────────────┘
+                  │ calls (via atoms)
+┌─────────────────▼───────────────────────────────────────┐
+│  Server Functions (TanStack Start)                      │
+│  - createServerFn() with middleware                     │
+│  - RuntimeServer.runPromise() to execute Effect         │
+└─────────────────┬───────────────────────────────────────┘
+                  │ runs
+┌─────────────────▼───────────────────────────────────────┐
+│  Effect Services (packages/core)                        │
+│  - Service layer: business logic                        │
+│  - Repo layer: Drizzle queries                          │
+│  - Custom errors: Schema.TaggedError                    │
+└─────────────────┬───────────────────────────────────────┘
+                  │ queries
+┌─────────────────▼───────────────────────────────────────┐
+│  Cloudflare D1 (SQLite via Drizzle)                     │
+└─────────────────────────────────────────────────────────┘
+```
+
+## Effect Patterns (from lax-db)
+
+### Service Structure
+
+```typescript
+// player.service.ts
+export class PlayerService extends Effect.Service<PlayerService>()(
+  'PlayerService',
+  {
+    effect: Effect.gen(function* () {
+      const repo = yield* PlayerRepo;
+
+      return {
+        create: (input) => Effect.gen(function* () {
+          const validated = yield* Schema.decode(CreatePlayerInput)(input);
+          return yield* repo.create(validated);
+        }),
+      } as const;
+    }),
+    dependencies: [PlayerRepo.Default],
+  }
+) {}
+```
+
+### Repository Structure
+
+```typescript
+// player.repo.ts
+export class PlayerRepo extends Effect.Service<PlayerRepo>()(
+  'PlayerRepo',
+  {
+    effect: Effect.gen(function* () {
+      const db = yield* DrizzleService;
+
+      return {
+        create: (input) => db.insert(players).values(input).returning(),
+        list: (orgId) => db.select().from(players).where(eq(players.organizationId, orgId)),
+      } as const;
+    }),
+    dependencies: [DrizzleService.Default],
+  }
+) {}
+```
+
+### Error Structure
+
+```typescript
+// player.error.ts
+export class PlayerNotFoundError extends Schema.TaggedError<PlayerNotFoundError>(
+  'PlayerNotFoundError'
+)('PlayerNotFoundError', {
+  message: Schema.String,
+  playerId: Schema.String,
+  code: Schema.optionalWith(Schema.Number, { default: () => 404 }),
+}) {}
+```
+
+### Server Function Structure
+
+```typescript
+// query/players.ts
+export const getPlayers = createServerFn({ method: 'GET' })
+  .middleware([authMiddleware])
+  .handler(async ({ context }) =>
+    RuntimeServer.runPromise(
+      Effect.gen(function* () {
+        const playerService = yield* PlayerService;
+        return yield* playerService.list(context.orgId);
+      })
+    )
+  );
+```
+
+### File Naming Convention
+
+```
+packages/core/src/
+├── player/
+│   ├── player.service.ts    # Business logic
+│   ├── player.repo.ts       # Data access
+│   ├── player.error.ts      # Custom errors
+│   ├── player.schema.ts     # Effect schemas (validation)
+│   └── index.ts             # Barrel export
+├── fine/
+│   ├── fine.service.ts
+│   ├── fine.repo.ts
+│   ├── fine.error.ts
+│   ├── fine.schema.ts
+│   └── index.ts
+└── runtime.server.ts        # ManagedRuntime with all services
+
+packages/web/src/
+├── lib/
+│   └── runtime.atom.ts      # RuntimeAtom setup
+├── atoms/
+│   ├── player.atom.ts       # Player state atoms
+│   ├── fine.atom.ts         # Fine state atoms
+│   └── leaderboard.atom.ts  # Leaderboard atoms
+└── ...
+```
+
+## Effect Atom Patterns
+
+### RuntimeAtom Setup
+
+```typescript
+// lib/runtime.atom.ts
+import { Atom } from '@effect-atom/atom-react';
+
+// Layer for client-side services (if any)
+const ClientLayer = Layer.empty;
+
+export const RuntimeAtom = Atom.runtime(ClientLayer);
+```
+
+### Data Fetching Atom
+
+```typescript
+// atoms/player.atom.ts
+import { RuntimeAtom } from '../lib/runtime.atom';
+import { getPlayers } from '../query/players';
+
+// Atom that fetches players via server function
+export const playersAtom = RuntimeAtom.atom(
+  Effect.tryPromise(() => getPlayers())
+);
+
+// Usage in component
+function PlayerList() {
+  const players = useAtomValue(playersAtom);
+  // players is Result<Player[], Error>
+}
+```
+
+### Derived Atoms
+
+```typescript
+// atoms/leaderboard.atom.ts
+export const leaderboardAtom = atom((get) => {
+  const players = get(playersAtom);
+  const fines = get(finesAtom);
+
+  // Derive leaderboard from players + fines
+  return players.map(p => ({
+    ...p,
+    totalOwed: fines.filter(f => f.playerId === p.id).reduce(...)
+  })).sort((a, b) => b.totalOwed - a.totalOwed);
+});
+```
+
+## Scope
+
+### In Scope (Experiment MVP)
+
+| Feature         | Description                                   |
+| --------------- | --------------------------------------------- |
+| **Auth**        | Login/register working E2E                    |
+| **Players**     | CRUD (create, list, update, deactivate)       |
+| **Fines**       | Issue fine, list fines, mark as paid          |
+| **Leaderboard** | Who owes most, total collected vs outstanding |
+
+### Out of Scope (Deprioritized)
+
+- Organizations UI (schema exists, ignore for now)
+- Fine presets
+- Audit logging
+- Layout/navigation polish
+- Mobile responsiveness
+- Loading/error/empty states polish
+
+## Data Model
+
+Schema already exists in `packages/core/src/drizzle/schema.ts`.
+
+**Using for MVP:**
+
+- `user`, `session`, `account` (Better Auth)
+- `players` (team members)
+- `fines` (issued fines)
+
+**Exists but deprioritized:**
+
+- `organization`, `member`, `invitation` (orgs)
+- `finePresets`, `auditLogs`
 
 ## Development Phases
 
 ### Phase 1: Foundation ✅
 
 - [x] Project setup (Alchemy, TanStack Start, Tailwind)
-- [x] Database setup (Kysely, D1)
-- [ ] Better Auth setup with Organizations
-- [ ] Basic layout/navigation
+- [x] Database setup (Drizzle, D1)
+- [x] Better Auth setup
+- [x] Schema (players, fines, etc.)
 
-### Phase 2: Core Data
+### Phase 2: Effect Infrastructure
 
-- [ ] Player CRUD
-- [ ] Fine CRUD
-- [ ] Fine presets CRUD
-- [ ] Audit logging
+- [ ] DrizzleService (D1 integration with Effect)
+- [ ] RuntimeServer (ManagedRuntime with layers)
+- [ ] RuntimeAtom (Effect Atom for frontend state)
+- [ ] Auth middleware for server functions
 
-### Phase 3: Views
+### Phase 3: Player Domain
 
-- [ ] Dashboard / Leaderboard
-- [ ] Fines list (filterable)
-- [ ] Player detail view
-- [ ] Summary stats
+- [ ] PlayerRepo (Drizzle queries)
+- [ ] PlayerService (business logic)
+- [ ] Player errors + schemas
+- [ ] Server functions (list, create, update)
+- [ ] Simple UI (list + form)
 
-### Phase 4: Polish
+### Phase 4: Fine Domain
 
-- [ ] Mobile responsiveness
-- [ ] Loading states
-- [ ] Error handling
-- [ ] Empty states
+- [ ] FineRepo (Drizzle queries)
+- [ ] FineService (issue, mark paid, update balance)
+- [ ] Fine errors + schemas
+- [ ] Server functions
+- [ ] Simple UI (list + issue form)
 
-### Phase 5: v2 Features
+### Phase 5: Leaderboard
 
-- [ ] Fine suggestions
-- [ ] Automated doubling
-- [ ] Notifications
-- [ ] Season management
+- [ ] LeaderboardService (aggregations: totals, rankings)
+- [ ] Server function
+- [ ] Leaderboard UI (home page)
 
-## Decisions Made
+## Routes (Simplified)
 
-| Topic            | Decision                   | Notes                        |
-| ---------------- | -------------------------- | ---------------------------- |
-| Payment method   | Admin marks as paid        | No payment integration       |
-| Fine visibility  | All players see all fines  | Full transparency            |
-| Fine suggestions | Admin approval only        | Voting backlogged            |
-| Notifications    | None for MVP               | Backlogged                   |
-| Audit trail      | Yes, visible to all        | Important for transparency   |
-| Payment tracking | Simple running balance     | Advanced tracking backlogged |
-| Seasons          | Single running log for MVP | Season mgmt backlogged       |
-| Fine presets     | Per-organization           | Admins configure their own   |
-| Appeals          | In-person for now          | In-app appeals backlogged    |
-| Leaderboard      | Yes, prominent             | Gamification element         |
-| Export           | No, summary page instead   | Export backlogged            |
-| Mobile           | Responsive web for MVP     | React Native backlogged      |
+| Route          | Purpose            |
+| -------------- | ------------------ |
+| `/login`       | Sign in            |
+| `/register`    | Create account     |
+| `/`            | Leaderboard (home) |
+| `/players`     | Player list        |
+| `/players/new` | Add player         |
+| `/fines`       | Fine list          |
+| `/fines/new`   | Issue fine         |
+
+## Success Criteria
+
+1. Can deploy to Cloudflare via Alchemy
+2. D1 database operations work (read/write)
+3. Effect services run in Workers environment
+4. Server functions call Effect services correctly
+5. Basic CRUD flows work E2E

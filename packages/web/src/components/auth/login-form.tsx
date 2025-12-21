@@ -1,8 +1,3 @@
-import { effectTsResolver } from '@hookform/resolvers/effect-ts';
-import { redirect } from '@tanstack/react-router';
-import { Schema } from 'effect';
-import { useEffect, useState, useTransition } from 'react';
-import { useForm } from 'react-hook-form';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,6 +11,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { authClient } from '@/lib/auth-client';
 import { cn } from '@/lib/utils';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
+import { redirect } from '@tanstack/react-router';
+import { Schema } from 'effect';
+import { useEffect, useState, useTransition } from 'react';
+import { useForm } from 'react-hook-form';
 
 const LoginSchema = Schema.Struct({
   email: Schema.String.pipe(
@@ -48,7 +48,7 @@ export function LoginForm({ redirectUrl, className, ...props }: LoginFormProps) 
     },
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = (data: LoginFormValues) => {
     setError('');
 
     startTransition(async () => {

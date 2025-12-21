@@ -10,6 +10,7 @@
 ## Essential Commands
 
 ### Status & Log
+
 ```bash
 jj status                    # Show working copy changes
 jj log                       # Show commit history (graph)
@@ -19,6 +20,7 @@ jj diff -r @-                # Diff against parent
 ```
 
 ### Creating Commits
+
 ```bash
 jj commit -m "message"       # Commit working copy, start new empty change
 jj describe -m "message"     # Set message for current change (no new commit)
@@ -27,6 +29,7 @@ jj new -m "message"          # Start new change with message
 ```
 
 ### Navigating History
+
 ```bash
 jj edit <rev>                # Move working copy to revision
 jj prev                      # Edit parent commit
@@ -34,6 +37,7 @@ jj next                      # Edit child commit
 ```
 
 ### Bookmarks (like branches)
+
 ```bash
 jj bookmark list             # List bookmarks
 jj bookmark create <name>    # Create bookmark at @
@@ -42,6 +46,7 @@ jj bookmark track <name>@origin  # Track remote bookmark
 ```
 
 ### Git Integration
+
 ```bash
 jj git fetch                 # Fetch from remotes
 jj git push                  # Push current bookmark
@@ -50,6 +55,7 @@ jj git push --all            # Push all bookmarks
 ```
 
 ### Rewriting History
+
 ```bash
 jj squash                    # Squash @ into parent
 jj squash -r <rev>           # Squash rev into its parent
@@ -59,6 +65,7 @@ jj restore --from <rev>      # Restore files from another revision
 ```
 
 ### Revsets (revision specifiers)
+
 ```bash
 @                            # Current working copy
 @-                           # Parent of @
@@ -71,6 +78,7 @@ trunk()                      # Main branch (auto-detected)
 ## Common Workflows
 
 ### Start work on new feature
+
 ```bash
 jj new main -m "feat: add feature"
 # ... make changes ...
@@ -78,28 +86,33 @@ jj commit -m "feat: add feature"
 ```
 
 ### Amend current change
+
 ```bash
 # Just edit files - working copy IS the current change
 jj describe -m "better message"  # Update message if needed
 ```
 
 ### Interactive commit (partial changes)
+
 ```bash
 jj split                     # Interactively split changes
 ```
 
 ### Rebase onto latest main
+
 ```bash
 jj git fetch
 jj rebase -d main@origin
 ```
 
 ### Squash multiple commits
+
 ```bash
 jj squash --from <start> --into <target>
 ```
 
 ### Undo last operation
+
 ```bash
 jj undo                      # Undo last jj command
 jj op log                    # View operation history
@@ -109,6 +122,7 @@ jj op restore <op-id>        # Restore to specific operation
 ## Colocated Repo (jj + git)
 
 When colocated, both jj and git work on same repo:
+
 - `.git/` is the actual git repo
 - `.jj/` stores jj metadata
 - Git commits visible in jj, jj changes export to git

@@ -6,7 +6,7 @@ import { authMiddleware } from '@/lib/middleware';
 
 export const getSession = createServerFn({ method: 'GET' })
   .middleware([authMiddleware])
-  .handler(async ({ context }) => context.session);
+  .handler(({ context }) => context.session);
 
 export const logout = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
