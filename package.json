@@ -1,25 +1,29 @@
 {
   "name": "fines-app",
   "version": "0.0.0",
+  "private": true,
   "description": "Alchemy Typescript Project",
-  "type": "module",
   "workspaces": [
     "packages/*"
   ],
-  "packageManager": "bun@1.3.0",
+  "type": "module",
   "scripts": {
     "build": "turbo build",
     "typecheck": "turbo typecheck",
     "deploy": "bun --env-file=.env alchemy deploy",
     "destroy": "bun --env-file=.env alchemy destroy",
     "dev": "bun --env-file=.env alchemy dev",
-    "check": "bunx ultracite@latest check",
-    "fix": "bunx ultracite@latest fix --unsafe",
+    "check": "oxlint && oxfmt --check",
+    "fix": "oxlint --fix && oxfmt",
     "prepare": "effect-language-service patch",
     "postinstall": "vibe-rules install codex"
   },
+  "dependencies": {
+    "@effect/platform": "^0.93.6",
+    "@effect/platform-node": "^0.103.0",
+    "effect": "^3.19.11"
+  },
   "devDependencies": {
-    "@biomejs/biome": "2.2.6",
     "@cloudflare/workers-types": "^4.20251211.0",
     "@effect/language-service": "^0.62.0",
     "@tsconfig/bun": "^1.0.10",
@@ -29,16 +33,13 @@
     "alchemy-effect": "^0.2.0",
     "lefthook": "^2.0.9",
     "miniflare": "^4.20251202.1",
+    "oxfmt": "^0.19.0",
+    "oxlint": "^1.34.0",
+    "oxlint-tsgolint": "^0.10.0",
     "turbo": "^2.6.3",
     "typescript": "^5.9.3",
-    "ultracite": "5.6.4",
     "vibe-rules": "^0.3.91",
     "vitest": "latest"
   },
-  "dependencies": {
-    "@effect/platform": "^0.93.6",
-    "@effect/platform-node": "^0.103.0",
-    "effect": "^3.19.11"
-  },
-  "private": true
+  "packageManager": "bun@1.3.0"
 }

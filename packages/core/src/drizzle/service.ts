@@ -6,5 +6,4 @@ const D1Live = (db: D1Database) => D1Client.layer({ db });
 
 export const DatabaseLive = SqliteDrizzle.layer;
 
-export const makeDatabaseLayer = (db: D1Database) =>
-  Layer.provideMerge(DatabaseLive, D1Live(db));
+export const makeDatabaseLayer = (db: D1Database) => Layer.provideMerge(DatabaseLive, D1Live(db));

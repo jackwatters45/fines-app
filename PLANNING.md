@@ -9,6 +9,7 @@ A web application for tracking player fines on a men's lacrosse team. Fines accu
 ## User Roles
 
 ### Admin (Organization Owner/Admin)
+
 - Full CRUD on team members (players)
 - Issue fines to any player
 - Approve/reject fine suggestions from players
@@ -17,6 +18,7 @@ A web application for tracking player fines on a men's lacrosse team. Fines accu
 - View all data and reports
 
 ### Player (Organization Member)
+
 - View all fines (full transparency)
 - View team leaderboard
 - Suggest fines for other players (requires admin approval)
@@ -27,18 +29,21 @@ A web application for tracking player fines on a men's lacrosse team. Fines accu
 ### MVP (v1)
 
 #### 1. Authentication & Organizations
+
 - Email/password auth via Better Auth
 - Organization (team) creation
 - Invite players to organization
 - Player claims account via invite
 
 #### 2. Player Management
+
 - Add/remove team members
 - Player profiles (name, email)
 - Active/inactive status
 - Running balance (total owed)
 
 #### 3. Fine Management
+
 - Issue fines with:
   - Amount (custom, in dollars)
   - Reason (free text)
@@ -49,23 +54,27 @@ A web application for tracking player fines on a men's lacrosse team. Fines accu
 - Audit trail for all changes
 
 #### 4. Fine Presets (per organization)
+
 - Admins can save common fines as presets
 - Examples: "Missed practice - $5", "Late - $2"
 - Quick-select when issuing fines
 
 #### 5. Payment Tracking (Simple)
+
 - Admin marks fines as paid
 - Payment date recorded
 - Running balance per player
 - Total team fund collected
 
 #### 6. Leaderboard / Dashboard
+
 - Team standings (who owes most)
 - Recent fines feed
 - Total collected vs outstanding
 - Summary stats
 
 #### 7. Audit Trail
+
 - Track all actions (fine created, paid, modified)
 - Who did what, when
 - Visible to all players
@@ -85,6 +94,7 @@ A web application for tracking player fines on a men's lacrosse team. Fines accu
 ## Data Model
 
 ### Better Auth Tables (managed by Better Auth)
+
 - `user` - Auth users
 - `session` - User sessions
 - `account` - Auth accounts (credentials)
@@ -169,11 +179,13 @@ fine_rules
 ## Pages / Routes
 
 ### Public
+
 - `/login` - Sign in
 - `/signup` - Create account
 - `/invite/:code` - Accept organization invite
 
 ### Authenticated (any role)
+
 - `/` - Dashboard (redirect based on context)
 - `/org/:orgId` - Organization dashboard / leaderboard
 - `/org/:orgId/fines` - All fines list
@@ -181,6 +193,7 @@ fine_rules
 - `/org/:orgId/players/:playerId` - Player detail + their fines
 
 ### Admin Only
+
 - `/org/:orgId/admin` - Admin dashboard
 - `/org/:orgId/admin/players/new` - Add player
 - `/org/:orgId/admin/fines/new` - Issue fine
@@ -208,30 +221,35 @@ fine_rules
 ## Development Phases
 
 ### Phase 1: Foundation ✅
+
 - [x] Project setup (Alchemy, TanStack Start, Tailwind)
 - [x] Database setup (Kysely, D1)
 - [ ] Better Auth setup with Organizations
 - [ ] Basic layout/navigation
 
 ### Phase 2: Core Data
+
 - [ ] Player CRUD
 - [ ] Fine CRUD
 - [ ] Fine presets CRUD
 - [ ] Audit logging
 
 ### Phase 3: Views
+
 - [ ] Dashboard / Leaderboard
 - [ ] Fines list (filterable)
 - [ ] Player detail view
 - [ ] Summary stats
 
 ### Phase 4: Polish
+
 - [ ] Mobile responsiveness
 - [ ] Loading states
 - [ ] Error handling
 - [ ] Empty states
 
 ### Phase 5: v2 Features
+
 - [ ] Fine suggestions
 - [ ] Automated doubling
 - [ ] Notifications
@@ -239,17 +257,17 @@ fine_rules
 
 ## Decisions Made
 
-| Topic | Decision | Notes |
-|-------|----------|-------|
-| Payment method | Admin marks as paid | No payment integration |
-| Fine visibility | All players see all fines | Full transparency |
-| Fine suggestions | Admin approval only | Voting backlogged |
-| Notifications | None for MVP | Backlogged |
-| Audit trail | Yes, visible to all | Important for transparency |
-| Payment tracking | Simple running balance | Advanced tracking backlogged |
-| Seasons | Single running log for MVP | Season mgmt backlogged |
-| Fine presets | Per-organization | Admins configure their own |
-| Appeals | In-person for now | In-app appeals backlogged |
-| Leaderboard | Yes, prominent | Gamification element |
-| Export | No, summary page instead | Export backlogged |
-| Mobile | Responsive web for MVP | React Native backlogged |
+| Topic            | Decision                   | Notes                        |
+| ---------------- | -------------------------- | ---------------------------- |
+| Payment method   | Admin marks as paid        | No payment integration       |
+| Fine visibility  | All players see all fines  | Full transparency            |
+| Fine suggestions | Admin approval only        | Voting backlogged            |
+| Notifications    | None for MVP               | Backlogged                   |
+| Audit trail      | Yes, visible to all        | Important for transparency   |
+| Payment tracking | Simple running balance     | Advanced tracking backlogged |
+| Seasons          | Single running log for MVP | Season mgmt backlogged       |
+| Fine presets     | Per-organization           | Admins configure their own   |
+| Appeals          | In-person for now          | In-app appeals backlogged    |
+| Leaderboard      | Yes, prominent             | Gamification element         |
+| Export           | No, summary page instead   | Export backlogged            |
+| Mobile           | Responsive web for MVP     | React Native backlogged      |

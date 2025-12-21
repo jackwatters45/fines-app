@@ -1,12 +1,7 @@
 import type { Session, User } from 'better-auth';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import {
-  admin,
-  lastLoginMethod,
-  openAPI,
-  organization,
-} from 'better-auth/plugins';
+import { admin, lastLoginMethod, openAPI, organization } from 'better-auth/plugins';
 import { tanstackStartCookies } from 'better-auth/tanstack-start';
 import { Effect } from 'effect';
 import type { Database } from './drizzle';
@@ -58,8 +53,9 @@ export const createAuth = ({ db, kv }: AuthBindings) => {
     auth, // export base auth
     getSession: (headers: Headers) =>
       Effect.tryPromise(async () => {
-        const session: { session: Session; user: User } | null =
-          await auth.api.getSession({ headers });
+        const session: { session: Session; user: User } | null = await auth.api.getSession({
+          headers,
+        });
 
         return session;
       }).pipe(
@@ -68,13 +64,14 @@ export const createAuth = ({ db, kv }: AuthBindings) => {
             new AuthenticationError({
               cause,
               message: 'Failed to get session',
-            })
-        )
+            }),
+        ),
       ),
     getSessionOrThrow: (headers: Headers) =>
       Effect.tryPromise(async () => {
-        const session: { session: Session; user: User } | null =
-          await auth.api.getSession({ headers });
+        const session: { session: Session; user: User } | null = await auth.api.getSession({
+          headers,
+        });
 
         return session;
       }).pipe(
@@ -83,15 +80,15 @@ export const createAuth = ({ db, kv }: AuthBindings) => {
             new AuthenticationError({
               cause,
               message: 'Failed to get session',
-            })
+            }),
         ),
         Effect.filterOrFail(
           (session) => !!session,
           () =>
             new AuthenticationError({
               message: 'Session is not valid',
-            })
-        )
+            }),
+        ),
       ),
     // getActiveOrganization: (headers: Headers) =>
     //   Effect.tryPromise(() => auth.api.getFullOrganization({ headers })).pipe(
