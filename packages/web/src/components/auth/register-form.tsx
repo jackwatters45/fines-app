@@ -17,35 +17,30 @@ import { authClient } from '@/lib/auth-client';
 import { cn } from '@/lib/utils';
 
 const registerSchema = Schema.Struct({
-  name: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Name is required' })
-  ),
+  name: Schema.String.pipe(Schema.minLength(1, { message: () => 'Name is required' })),
   email: Schema.String.pipe(
     Schema.minLength(1, { message: () => 'Email is required' }),
     Schema.filter((email) => /\S+@\S+\.\S+/.test(email), {
       message: () => 'Please enter a valid email address',
-    })
+    }),
   ),
   password: Schema.String.pipe(
     Schema.minLength(8, {
       message: () => 'Password must be at least 8 characters long',
-    })
+    }),
   ),
   confirmPassword: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Please confirm your password' })
+    Schema.minLength(1, { message: () => 'Please confirm your password' }),
   ),
 }).pipe(
   Schema.filter((data) => data.password === data.confirmPassword, {
     message: () => 'Passwords do not match',
-  })
+  }),
 );
 
 type RegisterFormValues = typeof registerSchema.Type;
 
-export function RegisterForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<'div'>) {
+export function RegisterForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -76,15 +71,11 @@ export function RegisterForm({
       if (result.error) {
         setError(result.error.message || 'Registration failed');
       } else {
-        setSuccess(
-          'Account created successfully! Please check your email to verify your account.'
-        );
+        setSuccess('Account created successfully! Please check your email to verify your account.');
         form.reset();
       }
     } catch (error) {
-      setError(
-        error instanceof Error ? error.message : 'An unexpected error occurred'
-      );
+      setError(error instanceof Error ? error.message : 'An unexpected error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -97,9 +88,7 @@ export function RegisterForm({
         callbackURL: '/teams',
       });
     } catch (error) {
-      setError(
-        error instanceof Error ? error.message : 'Google sign up failed'
-      );
+      setError(error instanceof Error ? error.message : 'Google sign up failed');
     }
   };
 
@@ -161,11 +150,7 @@ export function RegisterForm({
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Create a password"
-                    type="password"
-                    {...field}
-                  />
+                  <Input placeholder="Create a password" type="password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -179,11 +164,7 @@ export function RegisterForm({
               <FormItem>
                 <FormLabel>Confirm Password</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Confirm your password"
-                    type="password"
-                    {...field}
-                  />
+                  <Input placeholder="Confirm your password" type="password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -50,17 +50,17 @@ bun run deploy
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `bun run dev` | Start development server |
-| `bun run deploy` | Deploy to Cloudflare |
+| Command           | Description              |
+| ----------------- | ------------------------ |
+| `bun run dev`     | Start development server |
+| `bun run deploy`  | Deploy to Cloudflare     |
 | `bun run destroy` | Tear down infrastructure |
-| `bun run check` | Run linting |
-| `bun run fix` | Fix linting issues |
+| `bun run check`   | Run linting              |
+| `bun run fix`     | Fix linting issues       |
 
 ### Core Package
 
-| Command | Description |
-|---------|-------------|
+| Command               | Description                 |
+| --------------------- | --------------------------- |
 | `bun run db:generate` | Generate Drizzle migrations |
-| `bun run db:studio` | Open Drizzle Studio |
+| `bun run db:studio`   | Open Drizzle Studio         |

@@ -1,10 +1,5 @@
 import alchemy from 'alchemy';
-import {
-  D1Database,
-  KVNamespace,
-  R2Bucket,
-  TanStackStart,
-} from 'alchemy/cloudflare';
+import { D1Database, KVNamespace, R2Bucket, TanStackStart } from 'alchemy/cloudflare';
 import { GitHubComment } from 'alchemy/github';
 import { CloudflareStateStore } from 'alchemy/state';
 
@@ -23,11 +18,7 @@ export const isPermanentStage = [prodStage, devStage].includes(stage);
 const PRODUCTION = 'fines.laxdb.io';
 const DEV = 'dev.fines.laxdb.io';
 export const domain =
-  stage === prodStage
-    ? PRODUCTION
-    : stage === devStage
-      ? DEV
-      : `${stage}.${DEV}`;
+  stage === prodStage ? PRODUCTION : stage === devStage ? DEV : `${stage}.${DEV}`;
 
 // Resources
 export const db = await D1Database('db', {

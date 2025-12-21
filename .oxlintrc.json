@@ -1,0 +1,43 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "import", "unicorn", "promise"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "pedantic": "warn",
+    "perf": "warn"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2024": true
+  },
+  "rules": {
+    "no-console": "off",
+    "no-alert": "off",
+    "no-empty": "off",
+    "no-shadow": "off",
+    "no-magic-numbers": "off",
+    "typescript/no-explicit-any": "off",
+    "typescript/ban-ts-comment": "off",
+    "typescript/no-non-null-assertion": "off",
+    "typescript/no-namespace": "off",
+    "typescript/consistent-type-imports": "error",
+    "typescript/consistent-type-exports": "error",
+    "import/no-cycle": "error",
+    "import/no-duplicates": "error",
+    "react/react-in-jsx-scope": "off",
+    "react/self-closing-comp": "error",
+    "react/jsx-key": "error",
+    "unicorn/no-nested-ternary": "off"
+  },
+  "ignorePatterns": [
+    "node_modules/**",
+    "**/dist/**",
+    "**/*.gen.ts",
+    "**/migrations/**",
+    "**/tests/**",
+    "**/infra/**",
+    "bun.lock"
+  ]
+}

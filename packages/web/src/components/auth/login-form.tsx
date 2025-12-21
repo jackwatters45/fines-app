@@ -21,11 +21,9 @@ const LoginSchema = Schema.Struct({
   email: Schema.String.pipe(
     Schema.filter((email) => /\S+@\S+\.\S+/.test(email), {
       message: () => 'Please enter a valid email address',
-    })
+    }),
   ),
-  password: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Password is required' })
-  ),
+  password: Schema.String.pipe(Schema.minLength(1, { message: () => 'Password is required' })),
 });
 type LoginFormValues = typeof LoginSchema.Type;
 
@@ -33,11 +31,7 @@ type LoginFormProps = React.ComponentPropsWithoutRef<'div'> & {
   redirectUrl: string | undefined;
 };
 
-export function LoginForm({
-  redirectUrl,
-  className,
-  ...props
-}: LoginFormProps) {
+export function LoginForm({ redirectUrl, className, ...props }: LoginFormProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState('');
   const [lastMethod, setLastMethod] = useState<string | null>(null);
@@ -72,11 +66,7 @@ export function LoginForm({
           });
         }
       } catch (error) {
-        setError(
-          error instanceof Error
-            ? error.message
-            : 'An unexpected error occurred'
-        );
+        setError(error instanceof Error ? error.message : 'An unexpected error occurred');
       }
     });
   };
@@ -92,9 +82,7 @@ export function LoginForm({
         setError(result.error.message || 'Google sign in failed');
       }
     } catch (error) {
-      setError(
-        error instanceof Error ? error.message : 'Google sign in failed'
-      );
+      setError(error instanceof Error ? error.message : 'Google sign in failed');
     }
   };
 
@@ -136,10 +124,7 @@ export function LoginForm({
               <FormItem>
                 <div className="flex items-center justify-between">
                   <FormLabel>Password</FormLabel>
-                  <a
-                    className="text-sm underline-offset-4 hover:underline"
-                    href="forgot-password"
-                  >
+                  <a className="text-sm underline-offset-4 hover:underline" href="forgot-password">
                     Forgot your password?
                   </a>
                 </div>
@@ -151,12 +136,7 @@ export function LoginForm({
             )}
           />
 
-          <Button
-            className="relative w-full"
-            disabled={isPending}
-            type="submit"
-            variant="outline"
-          >
+          <Button className="relative w-full" disabled={isPending} type="submit" variant="outline">
             <span className="flex items-center justify-start gap-2">
               {isPending ? 'Signing in...' : 'Sign in with Email'}
             </span>
