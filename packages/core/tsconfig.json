@@ -1,13 +1,4 @@
 {
   "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "Preserve",
-    "moduleResolution": "Bundler",
-    "strict": true,
-    "skipLibCheck": true,
-    "noEmit": true,
-    "types": ["@cloudflare/workers-types", "node"]
-  },
-  "include": ["src/**/*", "drizzle.config.ts"]
+  "compilerOptions": {}
 }

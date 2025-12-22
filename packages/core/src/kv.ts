@@ -1,3 +1,4 @@
+import type { KVNamespace, KVNamespaceListOptions } from '@cloudflare/workers-types';
 import { Context, Data, Effect, Layer } from 'effect';
 
 export class KVError extends Data.TaggedError('KVError')<{
